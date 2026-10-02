@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>For Vansh 💌</title>
+<style>
+:root{--bg:#fff1f4;--fg:#4a1626;--card:#fff;--accent:#e63e68;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#2a0f19;--fg:#ffe3ea;--card:#3d1826;--accent:#ff6b8f}}
+:root[data-theme="dark"]{--bg:#2a0f19;--fg:#ffe3ea;--card:#3d1826;--accent:#ff6b8f}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--fg);font-family:Georgia,'Times New Roman',serif;text-align:center;overflow:hidden}
+#app{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;position:relative}
+h1{font-size:2rem;margin:0 0 8px}
+p{max-width:320px;line-height:1.5;margin:8px 0}
+button{font:inherit;background:var(--accent);color:#fff;border:0;border-radius:999px;padding:12px 28px;font-size:1.05rem;margin-top:16px}
+#hud{position:absolute;top:calc(env(safe-area-inset-top,0px) + 12px);font-size:1rem}
+#field{position:absolute;inset:0;overflow:hidden}
+.h{position:absolute;font-size:44px;border:0;background:none;padding:0;margin:0;animation:fl linear forwards;cursor:pointer}
+@keyframes fl{from{transform:translateY(0)}to{transform:translateY(-110vh)}}
+#note{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:var(--card);border-radius:18px;padding:22px;width:min(300px,80%);box-shadow:0 8px 30px rgba(0,0,0,.25);font-size:1.1rem;z-index:5}
+</style></head>
+<body><div id="app"></div>
+<script>
+var N=[
+"You make ordinary days feel like favorites.",
+"Your laugh is my favorite sound.",
+"You're my safe place and my best adventure.",
+"You make me want to be my best self.",
+"Being with you just feels like home.",
+"You're the best part of every day.",
+"I'm so proud of you, always.",
+"Thank you for loving me the way you do.",
+"You're stuck with me. Forever. 😌"];
+var app=document.getElementById('app'),got=0,timer;
+function start(){
+ app.innerHTML='<h1>Hey Vansh 💌</h1><p>Happy Boyfriend\'s Day! I made you a little game.</p><p>Catch the hearts before they float away. Each one has a note for you.</p><button id="go">Play</button>';
+ document.getElementById('go').onclick=function(){music();play();};
+}
+function play(){
+ got=0;
+ app.innerHTML='<div id="hud">Hearts caught: <b id="c">0</b> / '+N.length+'</div><div id="field"></div>';
+ spawn();timer=setInterval(spawn,1100);
+}
+function spawn(){
+ var f=document.getElementById('field');if(!f)return;
+ var b=document.createElement('button');
+ b.className='h';b.textContent=['💖','💗','💘','💝'][Math.floor(Math.random()*4)];
+ b.style.left=(5+Math.random()*80)+'%';b.style.top='100%';
+ b.style.animationDuration=(5+Math.random()*3)+'s';
+ b.onclick=function(){catchIt(b)};
+ b.addEventListener('animationend',function(){b.remove()});
+ f.appendChild(b);
+}
+function catchIt(b){
+ b.remove();
+ var n=document.createElement('div');n.id='note';n.textContent=N[got];
+ app.appendChild(n);got++;
+ document.getElementById('c').textContent=got;
+ setTimeout(function(){n.remove();if(got>=N.length)finish()},2200);
+}
+function finish(){
+ clearInterval(timer);
+ app.innerHTML='<h1>You caught them all 🥹</h1><p>Every one of those is true, Vansh.</p><p>But wait, there\'s one more level.</p><button id="p2">Next level</button>';
+ document.getElementById('p2').onclick=match;
+}
+function match(){
+ var e=['💖','🌹','🎁','🍫'],d=e.concat(e).sort(function(){return Math.random()-.5}),open=[],done=0,lock=false;
+ app.innerHTML='<h1>Level 2</h1><p>Match the pairs to unlock your final surprise.</p><div id="g" style="display:grid;grid-template-columns:repeat(4,64px);gap:10px;margin-top:12px"></div>';
+ var g=document.getElementById('g');
+ d.forEach(function(x){
+  var c=document.createElement('button');
+  c.style.cssText='width:64px;height:64px;font-size:30px;margin:0;padding:0;border-radius:14px';
+  c.textContent='❔';
+  c.onclick=function(){
+   if(lock||c.dataset.o)return;
+   c.textContent=x;c.dataset.o=1;open.push([c,x]);
+   if(open.length==2){
+    lock=true;
+    var a=open[0],b=open[1];
+    setTimeout(function(){
+     if(a[1]==b[1]){done++;a[0].style.opacity=b[0].style.opacity=.5;if(done==4)end();}
+     else{a[0].textContent=b[0].textContent='❔';delete a[0].dataset.o;delete b[0].dataset.o;}
+     open=[];lock=false;
+    },700);
+   }
+  };
+  g.appendChild(c);
+ });
+}
+function end(){setTimeout(animals,500);}
+function animals(){
+ var A=[['🐻','Bear hug incoming! Consider this one reserved for you, anytime you need it.'],['🐰','Bunny says you\'re the cutest part of my whole day.'],['🐱','Kitty says: you\'re mine, no returns. 😼'],['🐶','Puppy promises to be loyal and love you forever, just like me.']],seen={},n=0;
+ app.innerHTML='<h1>Level 3</h1><p>Four little friends have a secret for you. Tap each one.</p><div id="an" style="display:grid;grid-template-columns:repeat(2,100px);gap:14px;margin-top:10px"></div><div id="msg" style="min-height:90px;margin-top:14px;max-width:300px;font-size:1.1rem"></div><div id="nx"></div>';
+ A.forEach(function(a,i){
+  var b=document.createElement('button');
+  b.style.cssText='width:100px;height:100px;font-size:52px;margin:0;padding:0;border-radius:24px';
+  b.textContent=a[0];
+  b.onclick=function(){
+   document.getElementById('msg').textContent=a[1];
+   if(!seen[i]){seen[i]=1;n++;b.style.opacity=.6;}
+   if(n==4&&!document.getElementById('f')){
+    var f=document.createElement('button');f.id='f';f.textContent='Next level ➡️';f.onclick=pot;
+    document.getElementById('nx').appendChild(f);
+   }
+  };
+  document.getElementById('an').appendChild(b);
+ });
+}
+function pot(){
+ var T=[['Love','#ff4d79'],['Loyalty','#4d94ff'],['Trust','#34c38f'],['Laughter','#ffb629'],['Care','#b36bff']],n=0;
+ app.style.overflowY='auto';
+ app.innerHTML='<div style="margin:auto;max-width:340px"><h1>Level 4</h1><p>Pour every tube into the pot to fill our relationship.</p>'+
+ '<div id="tb" style="display:flex;gap:8px;justify-content:center;margin:14px 0"></div>'+
+ '<div style="position:relative;width:200px;height:120px;margin:0 auto;border:4px solid var(--fg);border-top:0;border-radius:0 0 100px 100px;overflow:hidden;background:var(--card)"><div id="fl" style="position:absolute;bottom:0;left:0;right:0;height:0;background:linear-gradient(#ff8fab,#e63e68);transition:height .8s"></div></div>'+
+ '<p style="font-weight:bold;margin-top:8px">🍲 Our Relationship</p><div id="pm"></div></div>';
+ T.forEach(function(t){
+  var w=document.createElement('div');
+  w.style.cssText='width:56px;text-align:center;font-size:.75rem';
+  w.innerHTML='<div class="tu" style="position:relative;width:38px;height:100px;margin:0 auto 4px;border:3px solid var(--fg);border-radius:6px 6px 19px 19px;overflow:hidden;background:var(--card);cursor:pointer"><div class="lq" style="position:absolute;bottom:0;left:0;right:0;height:100%;background:'+t[1]+';transition:height .8s"></div></div>'+t[0];
+  w.firstChild.onclick=function(){
+   var q=w.querySelector('.lq');
+   if(q.dataset.d)return;
+   q.dataset.d=1;q.style.height='0';n++;
+   document.getElementById('fl').style.height=(n*100/5)+'%';
+   if(n==5)setTimeout(function(){
+    document.getElementById('pm').innerHTML='<p style="font-size:1.1rem">Our relationship is full of love, loyalty, trust, laughter and care, and every drop of it is because of you. Thank you for filling my life with so much. 🩷</p><button id="lf">Final message 💌</button>';
+    document.getElementById('lf').onclick=finale;
+   },1000);
+  };
+  document.getElementById('tb').appendChild(w);
+ });
+}
+function finale(){
+ app.style.overflowY='auto';
+ app.innerHTML='<div style="max-width:330px;line-height:1.6;font-size:1.05rem;margin:auto"><h1>Happyyy Boyfriend\'s Day Babyy 🩷💋</h1><p>Yayyyy you won, for the very first time huhh 😋… being with a person like you already feels like eternal bliss and i don\'t think I\'ll ever be able to let you go🩷 you make my day so much better just by being in it.</p><p>You are my property and as you know i take good care of my things😋 you\'re the best boyfriend a girl could ever ask for and maybe a good husband but huhh i won\'t be your wife soo yk 10/10 with a 7/10 😼😝</p><p>— Ashlynn 💕</p><button id="again">Play again</button></div>';
+ document.getElementById('again').onclick=function(){app.style.overflowY='';play();};
+}
+var ac,mg,muted=false;
+function music(){
+ if(ac)return;
+ var C=window.AudioContext||window.webkitAudioContext;if(!C)return;
+ try{
+  ac=new C();mg=ac.createGain();mg.gain.value=.3;mg.connect(ac.destination);
+  ac.resume();
+  try{var sa=new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=');sa.loop=true;sa.play();}catch(e){}
+  document.addEventListener('click',function(){if(ac.state!=='running')ac.resume();});
+  document.addEventListener('touchend',function(){if(ac.state!=='running')ac.resume();});
+  var ch=[[261.63,329.63,392,523.25],[220,261.63,329.63,440],[174.61,261.63,349.23,440],[196,246.94,293.66,392]],p=[0,1,2,3,2,1,2,3],i=0;
+  function note(f,t,d,type,v){
+   var o=ac.createOscillator(),g=ac.createGain();
+   o.type=type;o.frequency.value=f;
+   g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.02);g.gain.exponentialRampToValueAtTime(.001,t+d);
+   o.connect(g);g.connect(mg);o.start(t);o.stop(t+d+.1);
+  }
+  function tick(){
+   var t=ac.currentTime,c=ch[Math.floor(i/8)%4],k=i%8;
+   if(k==0)note(c[0]/2,t,2.4,'sine',.8);
+   note(c[p[k]]*2,t,1.2,'triangle',.5);
+   i++;
+  }
+  tick();setInterval(tick,330);
+  var m=document.createElement('button');
+  m.textContent='🔊';
+  m.style.cssText='position:fixed;right:12px;top:calc(env(safe-area-inset-top,0px) + 8px);margin:0;padding:8px 12px;z-index:10';
+  m.onclick=function(){muted=!muted;mg.gain.value=muted?0:.3;m.textContent=muted?'🔇':'🔊';};
+  document.body.appendChild(m);
+ }catch(e){}
+}
+start();
+</script></body></html>
